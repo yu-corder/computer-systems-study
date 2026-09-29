@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 char *read_file(const char *path) {
     FILE *fp = fopen(path, "r");
@@ -18,8 +19,26 @@ char *read_file(const char *path) {
     return buf;
 }
 
+int line = 0;
 void parser (char *p) {
-    printf("moji == %s\n", p);
+    while (*p) {
+        if (*p == '\n') {
+            p++;
+            line++;
+            continue;
+        }
+
+        if (isspace(*p)) { p++; continue;}
+
+        if (*p == '/' && (p[1] == '/')) {
+            while (*p != '\n') {
+                p++;
+            }
+            continue;
+        }
+        p++;
+    }
+    printf("line == %d\n", line);
 }
 
 int main(int argc, char **argv) {
