@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "parser.h"
+#include "codegen.h"
 
 char *read_file(const char *path) {
     FILE *fp = fopen(path, "r");
@@ -23,7 +25,11 @@ char *read_file(const char *path) {
 
 int main(int argc, char **argv) {
     int arg_count = argc - 1;
+
     char *src = read_file(argv[arg_count]);
+    
+    init_generate_file();
     parser(src);
+    fin_generate_file();
     return 0;
 }

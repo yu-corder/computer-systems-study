@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "parser.h"
+#include "codegen.h"
 
 int line = 0;
 static void parse_A(char *p) {
@@ -27,6 +28,7 @@ static void parse_A(char *p) {
 
         printf("addr == %d\n", addr);
         //機械語に変換関数呼び出し
+        generate_A(addr);
     } else {
         //それ以外
         char str[32];
