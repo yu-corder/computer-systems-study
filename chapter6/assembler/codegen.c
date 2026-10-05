@@ -10,7 +10,7 @@ void fin_generate_file(void) {
     fclose(dest);
 }
 
-void generate_A(int addr) {
+void generate_A_Number(int addr) {
     int bits[15] = {0};
     int total = addr;
 

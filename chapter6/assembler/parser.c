@@ -26,9 +26,13 @@ static void parse_A(char *p) {
         //@数値
         int addr = strtol(p, &p, 10);
 
-        printf("addr == %d\n", addr);
+        if (addr < 0 || addr > 32767) {
+            printf("Line %d: Expected a numeric value after register.", line + 1);
+            exit(1);
+        }
+
         //機械語に変換関数呼び出し
-        generate_A(addr);
+        generate_A_Number(addr);
     } else {
         //それ以外
         char str[32];
