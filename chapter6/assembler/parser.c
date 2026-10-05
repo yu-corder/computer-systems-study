@@ -20,8 +20,13 @@ static void parse_A(char *p) {
             exit(1);
         }
 
-        printf("addr == %d\n", addr);
+        if (addr < 0 || addr > 15) {
+            printf("Line %d: Expected a numeric value after register.", line + 1);
+            exit(1);
+        }
+
         //機械語に変換関数呼び出し
+        generate_A_Number(addr);
     } else if (isdigit(*p)) {
         //@数値
         int addr = strtol(p, &p, 10);
