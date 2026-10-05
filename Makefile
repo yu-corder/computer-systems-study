@@ -4,8 +4,8 @@ TARGET_COMP = chapter6/bin/assembler
 
 all: ${TARGET_COMP}
 
-$(TARGET_COMP): chapter6/assembler/assembler.c chapter6/assembler/parser.c chapter6/assembler/codegen.c
-		$(CC) $(CFLAGS) -o $(TARGET_COMP) chapter6/assembler/assembler.c chapter6/assembler/parser.c chapter6/assembler/codegen.c
+$(TARGET_COMP): chapter6/assembler/assembler.c chapter6/assembler/parser.c chapter6/assembler/codegen.c chapter6/assembler/resolve.c
+		$(CC) $(CFLAGS) -o $(TARGET_COMP) chapter6/assembler/assembler.c chapter6/assembler/parser.c chapter6/assembler/codegen.c chapter6/assembler/resolve.c
 
 run: all
 		./$(TARGET_COMP) chapter6/asm/Mult.asm

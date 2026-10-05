@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "codegen.h"
+#include "resolve.h"
 
 FILE *dest;
 void init_generate_file(void) {
@@ -28,4 +29,8 @@ void generate_A_Number(int addr) {
 
     fprintf(dest, "\n");
     
+}
+
+void generate_A_symbol(char *name) {
+    printf("str == %s\n", name);
 }

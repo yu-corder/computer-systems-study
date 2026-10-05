@@ -49,6 +49,7 @@ static void parse_A(char *p) {
         str[len] = '\0';
 
         //機械語に変換関数呼び出し
+        generate_A_symbol(str);
     }
 }
 
