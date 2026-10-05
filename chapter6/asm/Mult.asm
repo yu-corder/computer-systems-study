@@ -1,3 +1,4 @@
 //RAM[2]を0に初期化
-@i
+@mult
+@kyouka
 M=0

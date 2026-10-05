@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "resolve.h"
 
@@ -26,7 +27,30 @@ void make_bigger(void) {
 }
 
 int find_symbol (char *name) {
-    int addr = 1;
-    printf("name = %s\n", name);
-    return addr;
+    for (int i = 0; i < symbol_table_count; i++) {
+        if (strcmp(symbol_table[i].name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int insert_symbol (char *name) {
+    int current_index = symbol_table_count++;
+
+    int len = 0;
+    while (*name != '\0') {
+        name++;
+        len++;
+    }
+    name -= len;
+
+    symbol_table[current_index].name = malloc(len + 1);
+    len = 0;
+    while (*name != '\0') {
+        symbol_table[current_index].name[len++] = *name++;
+    }
+    symbol_table[current_index].name[len] = '\0';
+
+    return current_index;
 }

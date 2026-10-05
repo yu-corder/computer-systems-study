@@ -32,5 +32,12 @@ void generate_A_Number(int addr) {
 }
 
 void generate_A_symbol(char *name) {
-    printf("str == %s\n", name);
+    int addr = find_symbol(name);
+
+    if (addr == -1) {
+        addr = insert_symbol(name);
+        generate_A_Number(addr);
+    } else {
+        generate_A_Number(addr);
+    }
 }

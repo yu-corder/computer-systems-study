@@ -5,6 +5,7 @@
 
 #include "parser.h"
 #include "codegen.h"
+#include "resolve.h"
 
 char *read_file(const char *path) {
     FILE *fp = fopen(path, "r");
@@ -29,6 +30,7 @@ int main(int argc, char **argv) {
     char *src = read_file(argv[arg_count]);
     
     init_generate_file();
+    init_symbol_table();
     parser(src);
     fin_generate_file();
     return 0;
