@@ -2,13 +2,13 @@
 #include "codegen.h"
 #include "resolve.h"
 
-FILE *dest;
+FILE *fp;
 void init_generate_file(void) {
-    dest = fopen("chapter6/asm/test.hack", "wb");
+    fp = fopen("chapter6/asm/test.hack", "wb");
 }
 
 void fin_generate_file(void) {
-    fclose(dest);
+    fclose(fp);
 }
 
 void generate_A_Number(int addr) {
@@ -22,12 +22,12 @@ void generate_A_Number(int addr) {
     }
 
 
-    fprintf(dest, "0");
+    fprintf(fp, "0");
     for (int i = 0; i < 15; i++) {
-        fprintf(dest, "%d", bits[i]);
+        fprintf(fp, "%d", bits[i]);
     }
 
-    fprintf(dest, "\n");
+    fprintf(fp, "\n");
     
 }
 
@@ -39,5 +39,55 @@ void generate_A_symbol(char *name) {
         generate_A_Number(addr);
     } else {
         generate_A_Number(addr);
+    }
+}
+
+void dest(char *name, int *bits) {
+    if (*name == 'D') {
+        bits[10] = 0;
+        bits[11] = 1;
+        bits[12] = 0;
+    } else if (*name == 'M') {
+        bits[10] = 0;
+        bits[11] = 0;
+        bits[12] = 0;
+    } else if (*name == 'A') {
+        bits[10] = 1;
+        bits[11] = 0;
+        bits[12] = 0;
+    }
+
+}
+
+void no_jump(int *bits) {
+    bits[13] = 0;
+    bits[14] = 0;
+    bits[15] = 0;
+}
+
+void comp(char *name, int *bits) {
+    if (*name == 'D' && (name[2] == 'M')) {
+        bits[3] = 1;
+        bits[4] = 1;
+        bits[5] = 1;
+        bits[6] = 0;
+        bits[7] = 0;
+        bits[8] = 0;
+        bits[9] = 0;
+    }
+}
+
+void generate_C (char *name) {
+    int bits[15] = {0};
+    for (int i = 0; i < 3; i++) {
+        bits[i] = 1;
+    }
+
+    comp(name, bits);
+    dest(name, bits);
+    no_jump(bits);
+
+    for (int i = 0; i < 15; i++) {
+        printf("bit == %d\n", bits[i]);
     }
 }

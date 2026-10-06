@@ -75,6 +75,12 @@ void parser (char *p) {
             parse_A(p);
             continue;
         }
+
+        if ((*p == 'D' || *p== 'M' || *p == 'A') && (p[1] == '=')) {
+            generate_C(p);
+            p += 3;
+            continue;
+        }
         p++;
     }
     printf("line == %d\n", line);
