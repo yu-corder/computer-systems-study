@@ -8,9 +8,36 @@ Symbol *symbol_table;
 int symbol_table_capacity;
 int symbol_table_count = 0;
 
+static char *predefined_table[] = {
+    "SP",
+    "LCL",
+    "ARG",
+    "THIS",
+    "THAT",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15"
+};
+
+void insert_predefined_symbols(void) {
+    int size = sizeof(predefined_table) / sizeof(predefined_table[0]);
+    for (int i = 0; i < size; i++) {
+        insert_symbol(predefined_table[i]);
+    }
+}
+
 void init_symbol_table (void) {
-    symbol_table_capacity = 8;
-    symbol_table = malloc(sizeof(Symbol) * 8);
+    symbol_table_capacity = 16;
+    symbol_table = malloc(sizeof(Symbol) * 16);
+    insert_predefined_symbols();
 }
 
 void make_bigger(void) {
