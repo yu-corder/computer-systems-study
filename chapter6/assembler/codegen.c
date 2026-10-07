@@ -74,6 +74,14 @@ void comp(char *name, int *bits) {
         bits[7] = 0;
         bits[8] = 0;
         bits[9] = 0;
+    } else if (*name == 'M' && (name[2] == 'D')) {
+        bits[3] = 0;
+        bits[4] = 0;
+        bits[5] = 0;
+        bits[6] = 1;
+        bits[7] = 1;
+        bits[8] = 0;
+        bits[9] = 0;
     }
 }
 
@@ -88,6 +96,8 @@ void generate_C (char *name) {
     no_jump(bits);
 
     for (int i = 0; i < 15; i++) {
-        printf("bit == %d\n", bits[i]);
+        fprintf(fp, "%d", bits[i]);
     }
+
+    fprintf(fp, "\n");
 }
