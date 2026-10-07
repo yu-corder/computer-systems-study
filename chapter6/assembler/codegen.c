@@ -50,7 +50,7 @@ void dest(char *name, int *bits) {
     } else if (*name == 'M') {
         bits[10] = 0;
         bits[11] = 0;
-        bits[12] = 0;
+        bits[12] = 1;
     } else if (*name == 'A') {
         bits[10] = 1;
         bits[11] = 0;
@@ -65,28 +65,31 @@ void no_jump(int *bits) {
     bits[15] = 0;
 }
 
+void comp_put
+    (int *bits, int bit3, int bit4, int bit5, int bit6,
+        int bit7, int bit8, int bit9)
+{
+    bits[3] = bit3;
+    bits[4] = bit4;
+    bits[5] = bit5;
+    bits[6] = bit6;
+    bits[7] = bit7;
+    bits[8] = bit8;
+    bits[9] = bit9;
+}
+
 void comp(char *name, int *bits) {
     if (*name == 'D' && (name[2] == 'M')) {
-        bits[3] = 1;
-        bits[4] = 1;
-        bits[5] = 1;
-        bits[6] = 0;
-        bits[7] = 0;
-        bits[8] = 0;
-        bits[9] = 0;
+        comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
     } else if (*name == 'M' && (name[2] == 'D')) {
-        bits[3] = 0;
-        bits[4] = 0;
-        bits[5] = 0;
-        bits[6] = 1;
-        bits[7] = 1;
-        bits[8] = 0;
-        bits[9] = 0;
+        comp_put(bits, 0, 0, 0, 1, 1, 0, 0);
+    } else if (*name == 'D' && (name[2] == 'A')) {
+        comp_put(bits, 0, 1, 1, 0, 0, 0, 0);
     }
 }
 
 void generate_C (char *name) {
-    int bits[15] = {0};
+    int bits[16] = {0};
     for (int i = 0; i < 3; i++) {
         bits[i] = 1;
     }
@@ -94,8 +97,8 @@ void generate_C (char *name) {
     comp(name, bits);
     dest(name, bits);
     no_jump(bits);
-
-    for (int i = 0; i < 15; i++) {
+    
+    for (int i = 0; i < 16; i++) {
         fprintf(fp, "%d", bits[i]);
     }
 
