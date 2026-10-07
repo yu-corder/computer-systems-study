@@ -49,16 +49,23 @@ void dest_put(int *bits, int bit10, int bit11, int bit12) {
 }
 
 void dest(char *name, int *bits) {
-    if (*name == 'D') {
+    if (*name == 'M' && name[1] == 'D') {
+        dest_put(bits, 0, 1, 1);
+    } else if (*name == 'A' && name[1] == 'M' && name[2] == 'D') {
+        dest_put(bits, 1, 0, 1);
+    } else if (*name == 'A' && name[1] == 'D') {
+        dest_put(bits, 1, 1, 0);
+    } else if (*name == 'A' && name[1] == 'M') {
+        dest_put(bits, 1, 1, 1);
+    } else if (*name == 'D') {
         dest_put(bits, 0, 1, 0);
     } else if (*name == 'M') {
         dest_put(bits, 0, 0, 1);
     } else if (*name == 'A') {
         dest_put(bits, 1, 0, 0);
-    } else if (*name == 'M' && name[1] == 'D') {
-        dest_put(bits, 0, 1, 1);
+    } else {
+        dest_put(bits, 0, 0, 0);
     }
-
 }
 
 void no_jump(int *bits) {
