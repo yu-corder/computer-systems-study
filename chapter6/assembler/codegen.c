@@ -42,19 +42,21 @@ void generate_A_symbol(char *name) {
     }
 }
 
+void dest_put(int *bits, int bit10, int bit11, int bit12) {
+    bits[10] = bit10;
+    bits[11] = bit11;
+    bits[12] = bit12;
+}
+
 void dest(char *name, int *bits) {
     if (*name == 'D') {
-        bits[10] = 0;
-        bits[11] = 1;
-        bits[12] = 0;
+        dest_put(bits, 0, 1, 0);
     } else if (*name == 'M') {
-        bits[10] = 0;
-        bits[11] = 0;
-        bits[12] = 1;
+        dest_put(bits, 0, 0, 1);
     } else if (*name == 'A') {
-        bits[10] = 1;
-        bits[11] = 0;
-        bits[12] = 0;
+        dest_put(bits, 1, 0, 0);
+    } else if (*name == 'M' && name[1] == 'D') {
+        dest_put(bits, 0, 1, 1);
     }
 
 }
@@ -79,11 +81,11 @@ void comp_put
 }
 
 void comp(char *name, int *bits) {
-    if (*name == 'D' && (name[2] == 'M')) {
+    if (name[2] == 'M') {
         comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
-    } else if (*name == 'M' && (name[2] == 'D')) {
+    } else if (name[2] == 'D') {
         comp_put(bits, 0, 0, 0, 1, 1, 0, 0);
-    } else if (*name == 'D' && (name[2] == 'A')) {
+    } else if (name[2] == 'A') {
         comp_put(bits, 0, 1, 1, 0, 0, 0, 0);
     }
 }
@@ -94,8 +96,8 @@ void generate_C (char *name) {
         bits[i] = 1;
     }
 
-    comp(name, bits);
     dest(name, bits);
+    comp(name, bits);
     no_jump(bits);
     
     for (int i = 0; i < 16; i++) {
