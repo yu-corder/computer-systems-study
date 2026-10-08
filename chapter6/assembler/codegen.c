@@ -48,30 +48,41 @@ void dest_put(int *bits, int bit10, int bit11, int bit12) {
     bits[12] = bit12;
 }
 
-void dest(char *name, int *bits) {
+int dest(char *name, int *bits) {
+    int len = 0;
     if (*name == 'M' && name[1] == 'D') {
         dest_put(bits, 0, 1, 1);
+        len += 2;
     } else if (*name == 'A' && name[1] == 'M' && name[2] == 'D') {
         dest_put(bits, 1, 0, 1);
+        len += 3;
     } else if (*name == 'A' && name[1] == 'D') {
         dest_put(bits, 1, 1, 0);
+        len += 2;
     } else if (*name == 'A' && name[1] == 'M') {
         dest_put(bits, 1, 1, 1);
+        len += 2;
     } else if (*name == 'D') {
         dest_put(bits, 0, 1, 0);
+        len += 1;
     } else if (*name == 'M') {
         dest_put(bits, 0, 0, 1);
+        len += 1;
     } else if (*name == 'A') {
         dest_put(bits, 1, 0, 0);
+        len += 1;
     } else {
         dest_put(bits, 0, 0, 0);
+        len += 1;
     }
+    return len;
 }
 
-void no_jump(int *bits) {
+int no_jump(int *bits) {
     bits[13] = 0;
     bits[14] = 0;
     bits[15] = 0;
+    return 1;
 }
 
 void comp_put
@@ -87,29 +98,49 @@ void comp_put
     bits[9] = bit9;
 }
 
-void comp(char *name, int *bits) {
-    if (name[2] == 'M') {
+int comp(char *name, int *bits) {
+    int len = 0;
+    if (*name == 'M') {
         comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
-    } else if (name[2] == 'D') {
+        len += 1;
+    } else if (*name == 'D') {
         comp_put(bits, 0, 0, 0, 1, 1, 0, 0);
-    } else if (name[2] == 'A') {
+        len += 1;
+    } else if (*name == 'A') {
         comp_put(bits, 0, 1, 1, 0, 0, 0, 0);
+        len += 1;
     }
+
+    return len;
 }
 
-void generate_C (char *name) {
+int generate_C (char *p) {
     int bits[16] = {0};
     for (int i = 0; i < 3; i++) {
         bits[i] = 1;
     }
 
-    dest(name, bits);
-    comp(name, bits);
-    no_jump(bits);
+    int len = 0;
+    int tmp_len = 0;
+
+    tmp_len = dest(p, bits);
+    len += tmp_len;
+    p += tmp_len;
+
+    if (*p == '=') {
+        tmp_len = no_jump(bits);
+        len += tmp_len;
+        p += tmp_len;
+    }
+
+    tmp_len = comp(p, bits);
+    len += tmp_len;
     
     for (int i = 0; i < 16; i++) {
         fprintf(fp, "%d", bits[i]);
     }
 
     fprintf(fp, "\n");
+
+    return len;
 }
