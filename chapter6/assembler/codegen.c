@@ -129,9 +129,11 @@ int generate_C (char *p) {
 
     if (*p == '=') {
         tmp_len = no_jump(bits);
-        len += tmp_len;
-        p += tmp_len;
+    } else if (*p == ';') {
     }
+
+    len += tmp_len;
+    p += tmp_len;
 
     tmp_len = comp(p, bits);
     len += tmp_len;
