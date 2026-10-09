@@ -78,11 +78,39 @@ int dest(char *p, int *bits) {
     return len;
 }
 
+void jump_put(int *bits, int bit13, int bit14, int bit15) {
+    bits[13] = bit13;
+    bits[14] = bit14;
+    bits[15] = bit15;
+}
+
 int no_jump(int *bits) {
-    bits[13] = 0;
-    bits[14] = 0;
-    bits[15] = 0;
+    jump_put(bits, 0, 0, 0);
     return 1;
+}
+
+int jump(char *p, int *bits) {
+    int len = 3;
+    if (*p == 'J' && p[1] == 'G' && p[2] == 'T') {
+        jump_put(bits, 0, 0, 1);
+    } else if (*p == 'J' && p[1] == 'E' && p[2] == 'Q') {
+        jump_put(bits, 0, 1, 0);
+    } else if (*p == 'J' && p[1] == 'G' && p[2] == 'E') {
+        jump_put(bits, 0, 1, 1);
+    } else if (*p == 'J' && p[1] == 'L' && p[2] == 'T') {
+        jump_put(bits, 1, 0, 0);
+    } else if (*p == 'J' && p[1] == 'N' && p[2] == 'E') {
+        jump_put(bits, 1, 0, 1);
+    } else if (*p == 'J' && p[1] == 'L' && p[2] == 'E') {
+        jump_put(bits, 1, 1, 0);
+    } else if (*p == 'J' && p[1] == 'M' && p[2] == 'P') {
+        jump_put(bits, 1, 1, 1);
+    } else {
+        jump_put(bits, 0, 0, 0);
+        len = 1;
+    }
+
+    return len;
 }
 
 void comp_put
@@ -130,6 +158,8 @@ int generate_C (char *p) {
     if (*p == '=') {
         tmp_len = no_jump(bits);
     } else if (*p == ';') {
+        p += 1;
+        tmp_len = jump(p, bits);
     }
 
     len += tmp_len;
