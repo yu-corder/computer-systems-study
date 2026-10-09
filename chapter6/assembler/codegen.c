@@ -48,27 +48,27 @@ void dest_put(int *bits, int bit10, int bit11, int bit12) {
     bits[12] = bit12;
 }
 
-int dest(char *name, int *bits) {
+int dest(char *p, int *bits) {
     int len = 0;
-    if (*name == 'M' && name[1] == 'D') {
+    if (*p == 'M' && p[1] == 'D') {
         dest_put(bits, 0, 1, 1);
         len += 2;
-    } else if (*name == 'A' && name[1] == 'M' && name[2] == 'D') {
+    } else if (*p == 'A' && p[1] == 'M' && p[2] == 'D') {
         dest_put(bits, 1, 0, 1);
         len += 3;
-    } else if (*name == 'A' && name[1] == 'D') {
+    } else if (*p == 'A' && p[1] == 'D') {
         dest_put(bits, 1, 1, 0);
         len += 2;
-    } else if (*name == 'A' && name[1] == 'M') {
+    } else if (*p == 'A' && p[1] == 'M') {
         dest_put(bits, 1, 1, 1);
         len += 2;
-    } else if (*name == 'D') {
+    } else if (*p == 'D') {
         dest_put(bits, 0, 1, 0);
         len += 1;
-    } else if (*name == 'M') {
+    } else if (*p == 'M') {
         dest_put(bits, 0, 0, 1);
         len += 1;
-    } else if (*name == 'A') {
+    } else if (*p == 'A') {
         dest_put(bits, 1, 0, 0);
         len += 1;
     } else {
@@ -98,15 +98,15 @@ void comp_put
     bits[9] = bit9;
 }
 
-int comp(char *name, int *bits) {
+int comp(char *p, int *bits) {
     int len = 0;
-    if (*name == 'M') {
+    if (*p == 'M') {
         comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
         len += 1;
-    } else if (*name == 'D') {
+    } else if (*p == 'D') {
         comp_put(bits, 0, 0, 0, 1, 1, 0, 0);
         len += 1;
-    } else if (*name == 'A') {
+    } else if (*p == 'A') {
         comp_put(bits, 0, 1, 1, 0, 0, 0, 0);
         len += 1;
     }
