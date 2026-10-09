@@ -76,7 +76,7 @@ void parser (char *p) {
             continue;
         }
 
-        if ((*p == 'D' || *p== 'M' || *p == 'A') && (p[1] == '=')) {
+        if ((*p == 'D' || *p== 'M' || *p == 'A') && (p[1] == '=' || p[1] == ';')) {
             p += generate_C(p);
             continue;
         }
