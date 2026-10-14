@@ -50,25 +50,25 @@ void dest_put(int *bits, int bit10, int bit11, int bit12) {
 
 int dest(char *p, int *bits) {
     int len = 0;
-    if (*p == 'M' && p[1] == 'D') {
+    if (*p == 'M' && p[1] == 'D' && p[2] == '=') {
         dest_put(bits, 0, 1, 1);
         len += 2;
-    } else if (*p == 'A' && p[1] == 'M' && p[2] == 'D') {
+    } else if (*p == 'A' && p[1] == 'M' && p[2] == 'D' && p[3] == '=') {
         dest_put(bits, 1, 0, 1);
         len += 3;
-    } else if (*p == 'A' && p[1] == 'D') {
+    } else if (*p == 'A' && p[1] == 'D' && p[2] == '=') {
         dest_put(bits, 1, 1, 0);
         len += 2;
-    } else if (*p == 'A' && p[1] == 'M') {
+    } else if (*p == 'A' && p[1] == 'M' && p[2] == '=') {
         dest_put(bits, 1, 1, 1);
         len += 2;
-    } else if (*p == 'D') {
+    } else if (*p == 'D' && p[1] == '=') {
         dest_put(bits, 0, 1, 0);
         len += 1;
-    } else if (*p == 'M') {
+    } else if (*p == 'M' && p[1] == '=') {
         dest_put(bits, 0, 0, 1);
         len += 1;
-    } else if (*p == 'A') {
+    } else if (*p == 'A' && p[1] == '=') {
         dest_put(bits, 1, 0, 0);
         len += 1;
     } else {
