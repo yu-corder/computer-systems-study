@@ -128,14 +128,89 @@ void comp_put
 
 int comp(char *p, int *bits) {
     int len = 0;
-    if (*p == 'M') {
-        comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
+    if (*p == 'D' && p[1] == '+' && p[2] == '1') {
+        comp_put(bits, 0, 0, 1, 1, 1, 1, 1);
+        len += 3;
+    } else if (*p == 'A' && p[1] == '+' && p[2] == '1') {
+        comp_put(bits, 0, 1, 1, 0, 1, 1, 1);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '-' && p[2] == '1') {
+        comp_put(bits, 0, 0, 0, 1, 1, 1, 0);
+        len += 3;
+    } else if (*p == 'A' && p[1] == '-' && p[2] == '1') {
+        comp_put(bits, 0, 1, 1, 0, 0, 1, 0);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '+' && p[2] == 'A') {
+        comp_put(bits, 0, 0, 0, 0, 0, 1, 0);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '-' && p[2] == 'A') {
+        comp_put(bits, 0, 0, 1, 0, 0, 1, 1);
+        len += 3;
+    } else if (*p == 'A' && p[1] == '-' && p[2] == 'D') {
+        comp_put(bits, 0, 0, 0, 0, 1, 1, 1);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '&' && p[2] == 'A') {
+        comp_put(bits, 0, 0, 0, 0, 0, 0, 0);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '|' && p[2] == 'A') {
+        comp_put(bits, 0, 0, 1, 0, 1, 0, 1);
+        len += 3;
+    } else if (*p == 'M' && p[1] == '+' && p[2] == '1') {
+        comp_put(bits, 1, 1, 1, 0, 1, 1, 1);
+        len += 3;
+    } else if (*p == 'M' && p[1] == '-' && p[2] == '1') {
+        comp_put(bits, 1, 1, 1, 0, 0, 1, 0);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '+' && p[2] == 'M') {
+        comp_put(bits, 1, 0, 0, 0, 0, 1, 0);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '-' && p[2] == 'M') {
+        comp_put(bits, 1, 0, 1, 0, 0, 1, 1);
+        len += 3;
+    } else if (*p == 'M' && p[1] == '-' && p[2] == 'D') {
+        comp_put(bits, 1, 0, 0, 0, 1, 1, 1);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '&' && p[2] == 'M') {
+        comp_put(bits, 1, 0, 0, 0, 0, 0, 0);
+        len += 3;
+    } else if (*p == 'D' && p[1] == '|' && p[2] == 'M') {
+        comp_put(bits, 1, 0, 1, 0, 1, 0, 1);
+        len += 3;
+    } else if (*p == '!' && p[1] == 'M') {
+        comp_put(bits, 1, 1, 1, 0, 0, 0, 1);
+        len += 2;
+    } else if (*p == '-' && p[1] == 'M') {
+        comp_put(bits, 1, 1, 1, 0, 0, 1, 1);
+        len += 2;
+    } else if (*p == '-' && p[1] == '1') {
+        comp_put(bits, 0, 1, 1, 1, 0, 1, 0);
+        len += 2;
+    } else if (*p == '!' && p[1] == 'D') {
+        comp_put(bits, 0, 0, 0, 1, 1, 0, 1);
+        len += 2;
+    } else if (*p == '!' && p[1] == 'A') {
+        comp_put(bits, 0, 1, 1, 0, 0, 0, 1);
+        len += 2;
+    } else if (*p == '-' && p[1] == 'D') {
+        comp_put(bits, 0, 0, 0, 1, 1, 1, 1);
+        len += 2;
+    } else if (*p == '-' && p[1] == 'A') {
+        comp_put(bits, 0, 1, 1, 0, 0, 1, 1);
+        len += 2;
+    } else if (*p == '0') {
+        comp_put(bits, 0, 1, 0, 1, 0, 1, 0);
+        len += 1;
+    } else if (*p == '1') {
+        comp_put(bits, 0, 1, 1, 1, 1, 1, 1);
         len += 1;
     } else if (*p == 'D') {
         comp_put(bits, 0, 0, 0, 1, 1, 0, 0);
         len += 1;
     } else if (*p == 'A') {
         comp_put(bits, 0, 1, 1, 0, 0, 0, 0);
+        len += 1;
+    } else if (*p == 'M') {
+        comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
         len += 1;
     }
 
