@@ -73,7 +73,6 @@ int dest(char *p, int *bits) {
         len += 1;
     } else {
         dest_put(bits, 0, 0, 0);
-        len += 1;
     }
     return len;
 }
@@ -229,12 +228,18 @@ int generate_C (char *p) {
     tmp_len = dest(p, bits);
     len += tmp_len;
     p += tmp_len;
-
+    
+    char *tmp_p = p;
+    int jump_len = 0;
     if (*p == '=') {
         tmp_len = no_jump(bits);
-    } else if (*p == ';') {
-        p += 1;
-        tmp_len = jump(p, bits);
+    } else if (p[1] == ';' || p[2] == ';') {
+        while (*tmp_p != ';') {
+            tmp_p += 1;
+        }
+        tmp_p += 1;
+        jump_len = jump(tmp_p, bits);
+        tmp_len = 0;
     }
 
     len += tmp_len;
@@ -242,6 +247,7 @@ int generate_C (char *p) {
 
     tmp_len = comp(p, bits);
     len += tmp_len;
+    len += jump_len;
     
     for (int i = 0; i < 16; i++) {
         fprintf(fp, "%d", bits[i]);
