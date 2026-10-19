@@ -95,7 +95,7 @@ void init_label_table(void) {
 void insert_label (char *name, int len, int ram_addr) {
     int current_index = label_table_count++;
 
-    label_table[current_index].name = malloc(len);
+    label_table[current_index].name = malloc(len + 1);
     strcpy(label_table[current_index].name, name);
     label_table[current_index].ram_addr = ram_addr;
 }
