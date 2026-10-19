@@ -8,6 +8,11 @@ Symbol *symbol_table;
 int symbol_table_capacity;
 int symbol_table_count = 0;
 
+
+Label *label_table;
+int label_table_capacity;
+int label_table_count = 0;
+
 static char *predefined_table[] = {
     "SP",
     "LCL",
@@ -81,3 +86,26 @@ int insert_symbol (char *name) {
 
     return current_index;
 }
+
+void init_label_table(void) {
+    label_table_capacity = 16;
+    label_table = malloc(sizeof(Label) * 16);
+}
+
+void insert_label (char *name, int len, int ram_addr) {
+    int current_index = label_table_count++;
+
+    label_table[current_index].name = malloc(len);
+    strcpy(label_table[current_index].name, name);
+    label_table[current_index].ram_addr = ram_addr;
+}
+
+int find_label (char *name) {
+    for (int i = 0; i < label_table_count; i++) {
+        if (strcmp(label_table[i].name, name) == 0) {
+            return label_table[i].ram_addr;
+        }
+    }
+    return -1;
+}
+

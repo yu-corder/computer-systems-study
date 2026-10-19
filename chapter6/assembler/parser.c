@@ -6,8 +6,10 @@
 
 #include "parser.h"
 #include "codegen.h"
+#include "resolve.h"
 bool one_path = true;
 int line = 0;
+int ram_addr = 0;
 static void parse_A(char *p) {
     if (*p == 'R') {
         //@レジスタ
@@ -55,6 +57,25 @@ static void parse_A(char *p) {
             generate_A_symbol(str);
         }
     }
+    ram_addr++;
+}
+
+static void parse_label(char *p) {
+    char str[32];
+    int len = 0;
+    while(isalnum(*p) && *p != ')') {
+        str[len++] = *p++;
+    }
+
+    str[len] = '\0';
+
+    if (*p == ')') {
+        p++;
+    }
+
+    if (!one_path) return;
+
+    insert_label(str, len, ram_addr);
 }
 
 void parser (char *p) {
@@ -85,6 +106,13 @@ void parser (char *p) {
             p += generate_C(p);
             continue;
         }
+
+        if (*p == '(') {
+            p++;
+            parse_label(p);
+            continue;
+        }
+
         p++;
     }
     printf("line == %d\n", line);

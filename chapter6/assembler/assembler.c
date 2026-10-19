@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
     char *tmp_src = src;
 
     one_path = true;
+    init_label_table();
     parser(tmp_src);
     
     one_path = false;
