@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "codegen.h"
 #include "resolve.h"
+#include "parser.h"
 
 FILE *fp;
 void init_generate_file(void) {
@@ -248,12 +249,13 @@ int generate_C (char *p) {
     tmp_len = comp(p, bits);
     len += tmp_len;
     len += jump_len;
-    
-    for (int i = 0; i < 16; i++) {
-        fprintf(fp, "%d", bits[i]);
-    }
+    if (!one_path) {
+        for (int i = 0; i < 16; i++) {
+            fprintf(fp, "%d", bits[i]);
+        }
 
-    fprintf(fp, "\n");
+        fprintf(fp, "\n");
+    }
 
     return len;
 }

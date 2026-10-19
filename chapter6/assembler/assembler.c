@@ -28,7 +28,12 @@ int main(int argc, char **argv) {
     int arg_count = argc - 1;
 
     char *src = read_file(argv[arg_count]);
+    char *tmp_src = src;
+
+    one_path = true;
+    parser(tmp_src);
     
+    one_path = false;
     init_generate_file();
     init_symbol_table();
     parser(src);

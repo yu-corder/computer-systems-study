@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 #include "parser.h"
 #include "codegen.h"
-
+bool one_path = true;
 int line = 0;
 static void parse_A(char *p) {
     if (*p == 'R') {
@@ -25,8 +26,9 @@ static void parse_A(char *p) {
             exit(1);
         }
 
-        //機械語に変換関数呼び出し
-        generate_A_Number(addr);
+        if (!one_path) {
+            generate_A_Number(addr);
+        }
     } else if (isdigit(*p)) {
         //@数値
         int addr = strtol(p, &p, 10);
@@ -36,8 +38,9 @@ static void parse_A(char *p) {
             exit(1);
         }
 
-        //機械語に変換関数呼び出し
-        generate_A_Number(addr);
+        if (!one_path) {
+            generate_A_Number(addr);
+        }
     } else {
         //それ以外
         char str[32];
@@ -48,12 +51,14 @@ static void parse_A(char *p) {
         }
         str[len] = '\0';
 
-        //機械語に変換関数呼び出し
-        generate_A_symbol(str);
+        if (!one_path) {
+            generate_A_symbol(str);
+        }
     }
 }
 
 void parser (char *p) {
+    line = 0;
     while (*p) {
         if (*p == '\n') {
             p++;
