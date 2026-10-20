@@ -61,13 +61,13 @@ int dest(char *p, int *bits) {
         dest_put(bits, 0, 1, 1);
         len += 2;
     } else if (*p == 'A' && p[1] == 'M' && p[2] == 'D' && p[3] == '=') {
-        dest_put(bits, 1, 0, 1);
+        dest_put(bits, 1, 1, 1);
         len += 3;
     } else if (*p == 'A' && p[1] == 'D' && p[2] == '=') {
         dest_put(bits, 1, 1, 0);
         len += 2;
     } else if (*p == 'A' && p[1] == 'M' && p[2] == '=') {
-        dest_put(bits, 1, 1, 1);
+        dest_put(bits, 1, 0, 1);
         len += 2;
     } else if (*p == 'D' && p[1] == '=') {
         dest_put(bits, 0, 1, 0);
