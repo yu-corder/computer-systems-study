@@ -51,39 +51,42 @@ void generate_A_symbol(char *name) {
     }
 }
 
-void dest_put(int *bits, int bit10, int bit11, int bit12) {
-    bits[10] = bit10;
-    bits[11] = bit11;
-    bits[12] = bit12;
+typedef struct {
+    const char *name;
+    const char *binary;
+} DestEntry;
+
+static const DestEntry dest_table[] = {
+    {"AMD=", "111"},
+
+    {"MD=", "011"},
+    {"AD=", "110"},
+    {"AM=", "101"},
+
+    {"D=", "010"},
+    {"M=", "001"},
+    {"A=", "100"},
+};
+
+
+void dest_put(int *bits, const char *binary) {
+    for (int i = 0; i < 3; i++) {
+        bits[i + 10] = binary[i] - '0';
+    }
 }
 
 int dest(char *p, int *bits) {
-    int len = 0;
-    if (*p == 'M' && p[1] == 'D' && p[2] == '=') {
-        dest_put(bits, 0, 1, 1);
-        len += 2;
-    } else if (*p == 'A' && p[1] == 'M' && p[2] == 'D' && p[3] == '=') {
-        dest_put(bits, 1, 1, 1);
-        len += 3;
-    } else if (*p == 'A' && p[1] == 'D' && p[2] == '=') {
-        dest_put(bits, 1, 1, 0);
-        len += 2;
-    } else if (*p == 'A' && p[1] == 'M' && p[2] == '=') {
-        dest_put(bits, 1, 0, 1);
-        len += 2;
-    } else if (*p == 'D' && p[1] == '=') {
-        dest_put(bits, 0, 1, 0);
-        len += 1;
-    } else if (*p == 'M' && p[1] == '=') {
-        dest_put(bits, 0, 0, 1);
-        len += 1;
-    } else if (*p == 'A' && p[1] == '=') {
-        dest_put(bits, 1, 0, 0);
-        len += 1;
-    } else {
-        dest_put(bits, 0, 0, 0);
+    for (size_t i = 0; i < sizeof(dest_table) / sizeof(dest_table[0]); i++) {
+        const char *name = dest_table[i].name;
+        int len = strlen(name);
+
+        if (strncmp(p, name, len) == 0) {
+                dest_put(bits, dest_table[i].binary);
+                return len - 1;
+        }
     }
-    return len;
+
+    return 0;
 }
 
 void jump_put(int *bits, int bit13, int bit14, int bit15) {
