@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stddef.h>
 #include "codegen.h"
 #include "resolve.h"
 #include "parser.h"
@@ -161,108 +163,26 @@ static const CompEntry comp_table[] = {
     {"D|A", "0010101"},
 };
 
-void comp_put
-    (int *bits, int bit3, int bit4, int bit5, int bit6,
-        int bit7, int bit8, int bit9)
+void comp_put (int *bits, const char *binary)
 {
-    bits[3] = bit3;
-    bits[4] = bit4;
-    bits[5] = bit5;
-    bits[6] = bit6;
-    bits[7] = bit7;
-    bits[8] = bit8;
-    bits[9] = bit9;
+    for (int i = 0; i < 7; i++) {
+        bits[i + 3] = binary[i] - '0';
+    }
 }
 
 int comp(char *p, int *bits) {
-    int len = 0;
-    if (*p == 'D' && p[1] == '+' && p[2] == '1') {
-        comp_put(bits, 0, 0, 1, 1, 1, 1, 1);
-        len += 3;
-    } else if (*p == 'A' && p[1] == '+' && p[2] == '1') {
-        comp_put(bits, 0, 1, 1, 0, 1, 1, 1);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '-' && p[2] == '1') {
-        comp_put(bits, 0, 0, 0, 1, 1, 1, 0);
-        len += 3;
-    } else if (*p == 'A' && p[1] == '-' && p[2] == '1') {
-        comp_put(bits, 0, 1, 1, 0, 0, 1, 0);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '+' && p[2] == 'A') {
-        comp_put(bits, 0, 0, 0, 0, 0, 1, 0);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '-' && p[2] == 'A') {
-        comp_put(bits, 0, 0, 1, 0, 0, 1, 1);
-        len += 3;
-    } else if (*p == 'A' && p[1] == '-' && p[2] == 'D') {
-        comp_put(bits, 0, 0, 0, 0, 1, 1, 1);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '&' && p[2] == 'A') {
-        comp_put(bits, 0, 0, 0, 0, 0, 0, 0);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '|' && p[2] == 'A') {
-        comp_put(bits, 0, 0, 1, 0, 1, 0, 1);
-        len += 3;
-    } else if (*p == 'M' && p[1] == '+' && p[2] == '1') {
-        comp_put(bits, 1, 1, 1, 0, 1, 1, 1);
-        len += 3;
-    } else if (*p == 'M' && p[1] == '-' && p[2] == '1') {
-        comp_put(bits, 1, 1, 1, 0, 0, 1, 0);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '+' && p[2] == 'M') {
-        comp_put(bits, 1, 0, 0, 0, 0, 1, 0);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '-' && p[2] == 'M') {
-        comp_put(bits, 1, 0, 1, 0, 0, 1, 1);
-        len += 3;
-    } else if (*p == 'M' && p[1] == '-' && p[2] == 'D') {
-        comp_put(bits, 1, 0, 0, 0, 1, 1, 1);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '&' && p[2] == 'M') {
-        comp_put(bits, 1, 0, 0, 0, 0, 0, 0);
-        len += 3;
-    } else if (*p == 'D' && p[1] == '|' && p[2] == 'M') {
-        comp_put(bits, 1, 0, 1, 0, 1, 0, 1);
-        len += 3;
-    } else if (*p == '!' && p[1] == 'M') {
-        comp_put(bits, 1, 1, 1, 0, 0, 0, 1);
-        len += 2;
-    } else if (*p == '-' && p[1] == 'M') {
-        comp_put(bits, 1, 1, 1, 0, 0, 1, 1);
-        len += 2;
-    } else if (*p == '-' && p[1] == '1') {
-        comp_put(bits, 0, 1, 1, 1, 0, 1, 0);
-        len += 2;
-    } else if (*p == '!' && p[1] == 'D') {
-        comp_put(bits, 0, 0, 0, 1, 1, 0, 1);
-        len += 2;
-    } else if (*p == '!' && p[1] == 'A') {
-        comp_put(bits, 0, 1, 1, 0, 0, 0, 1);
-        len += 2;
-    } else if (*p == '-' && p[1] == 'D') {
-        comp_put(bits, 0, 0, 0, 1, 1, 1, 1);
-        len += 2;
-    } else if (*p == '-' && p[1] == 'A') {
-        comp_put(bits, 0, 1, 1, 0, 0, 1, 1);
-        len += 2;
-    } else if (*p == '0') {
-        comp_put(bits, 0, 1, 0, 1, 0, 1, 0);
-        len += 1;
-    } else if (*p == '1') {
-        comp_put(bits, 0, 1, 1, 1, 1, 1, 1);
-        len += 1;
-    } else if (*p == 'D') {
-        comp_put(bits, 0, 0, 0, 1, 1, 0, 0);
-        len += 1;
-    } else if (*p == 'A') {
-        comp_put(bits, 0, 1, 1, 0, 0, 0, 0);
-        len += 1;
-    } else if (*p == 'M') {
-        comp_put(bits, 1, 1, 1, 0, 0, 0, 0);
-        len += 1;
+    for (size_t i = 0; i < sizeof(comp_table) / sizeof(comp_table[0]); i++) {
+        const char *name = comp_table[i].name;
+        int len = strlen(name);
+
+        if (strncmp(p, name, len) == 0 &&
+            (p[len] == ';' || p[len] == '\n' || p[len] == '\0')) {
+                comp_put(bits, comp_table[i].binary);
+                return len;
+        }
     }
 
-    return len;
+    return 0;
 }
 
 int generate_C (char *p) {
