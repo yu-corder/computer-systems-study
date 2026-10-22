@@ -89,39 +89,46 @@ int dest(char *p, int *bits) {
     return 0;
 }
 
-void jump_put(int *bits, int bit13, int bit14, int bit15) {
-    bits[13] = bit13;
-    bits[14] = bit14;
-    bits[15] = bit15;
+typedef struct {
+    const char *name;
+    const char *binary;
+} JumpEntry;
+
+static const JumpEntry jump_table[] = {
+    {"JGT", "001"},
+    {"JEQ", "010"},
+    {"JGE", "011"},
+    {"JLT", "100"},
+    {"JNE", "101"},
+    {"JLE", "110"},
+    {"JMP", "111"},
+    {"NOJ", "000"},
+};
+
+void jump_put(int *bits, const char *binary) {
+    for (int i = 0; i < 3; i++) {
+        bits[i + 13] = binary[i] - '0';
+    }
 }
 
 int no_jump(int *bits) {
-    jump_put(bits, 0, 0, 0);
+    jump_put(bits, jump_table[7].binary);
     return 1;
 }
 
 int jump(char *p, int *bits) {
-    int len = 3;
-    if (*p == 'J' && p[1] == 'G' && p[2] == 'T') {
-        jump_put(bits, 0, 0, 1);
-    } else if (*p == 'J' && p[1] == 'E' && p[2] == 'Q') {
-        jump_put(bits, 0, 1, 0);
-    } else if (*p == 'J' && p[1] == 'G' && p[2] == 'E') {
-        jump_put(bits, 0, 1, 1);
-    } else if (*p == 'J' && p[1] == 'L' && p[2] == 'T') {
-        jump_put(bits, 1, 0, 0);
-    } else if (*p == 'J' && p[1] == 'N' && p[2] == 'E') {
-        jump_put(bits, 1, 0, 1);
-    } else if (*p == 'J' && p[1] == 'L' && p[2] == 'E') {
-        jump_put(bits, 1, 1, 0);
-    } else if (*p == 'J' && p[1] == 'M' && p[2] == 'P') {
-        jump_put(bits, 1, 1, 1);
-    } else {
-        jump_put(bits, 0, 0, 0);
-        len = 1;
+    for (size_t i = 0; i < sizeof(jump_table) / sizeof(jump_table[0]); i++) {
+        const char *name = jump_table[i].name;
+        int len = strlen(name);
+
+        if (strncmp(p, name, len) == 0 &&
+            (p[len] == '\n' || p[len] == '\0')) {
+                jump_put(bits, jump_table[i].binary);
+                return len;
+        }
     }
 
-    return len;
+    return 1;
 }
 
 
