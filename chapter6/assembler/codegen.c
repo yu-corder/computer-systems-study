@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stddef.h>
 #include "codegen.h"
 #include "resolve.h"
@@ -204,29 +205,30 @@ int generate_C (char *p) {
     int len = 0;
     int tmp_len = 0;
 
-    tmp_len = dest(p, bits);
-    len += tmp_len;
-    p += tmp_len;
-    
-    char *tmp_p = p;
-    int jump_len = 0;
-    if (*p == '=') {
-        tmp_len = no_jump(bits);
-    } else if (p[1] == ';' || p[2] == ';') {
-        while (*tmp_p != ';') {
-            tmp_p += 1;
-        }
-        tmp_p += 1;
-        jump_len = jump(tmp_p, bits);
-        tmp_len = 0;
+    char *line_end = strchr(p, '\n');
+    if (line_end == NULL) {
+        line_end = p + strlen(p);
     }
 
-    len += tmp_len;
-    p += tmp_len;
+    size_t line_len = line_end - p;
+
+    char *equal = memchr(p, '=', line_len);
+    char *semicolon = memchr(p, ';', line_len);
+
+    if (equal != NULL) {
+        tmp_len = dest(p, bits);
+        p += tmp_len + 1;
+        len += tmp_len + 1;
+    }
 
     tmp_len = comp(p, bits);
     len += tmp_len;
-    len += jump_len;
+
+    if (semicolon != NULL) {
+        tmp_len = jump(semicolon + 1, bits);
+        len += tmp_len + 1;
+    }
+
     if (!one_path) {
         for (int i = 0; i < 16; i++) {
             fprintf(fp, "%d", bits[i]);
