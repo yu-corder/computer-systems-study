@@ -72,20 +72,18 @@ int insert_symbol (char *name) {
         make_bigger();
     }
 
-    int current_index = symbol_table_count++;
-    int len = 0;
-    while (*name != '\0') {
-        name++;
-        len++;
-    }
-    name -= len;
+    size_t len = strlen(name);
 
-    symbol_table[current_index].name = malloc(len + 1);
-    len = 0;
-    while (*name != '\0') {
-        symbol_table[current_index].name[len++] = *name++;
+    char *copy = malloc(len + 1);
+    if (copy == NULL) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
     }
-    symbol_table[current_index].name[len] = '\0';
+
+    memcpy(copy, name, len + 1);
+
+    int current_index = symbol_table_count++;
+    symbol_table[current_index].name = copy;
 
     return current_index;
 }
