@@ -68,8 +68,11 @@ int find_symbol (char *name) {
 }
 
 int insert_symbol (char *name) {
-    int current_index = symbol_table_count++;
+    if (symbol_table_count >= symbol_table_capacity) {
+        make_bigger();
+    }
 
+    int current_index = symbol_table_count++;
     int len = 0;
     while (*name != '\0') {
         name++;
@@ -92,7 +95,23 @@ void init_label_table(void) {
     label_table = malloc(sizeof(Label) * 16);
 }
 
+void make_label_bigger(void) {
+    int new_capacity = label_table_capacity * 2;
+    Label *new_label_table = realloc(label_table, sizeof(Label) * new_capacity);
+
+    if (new_label_table == NULL) {
+        printf("Memory expansion failed.");
+        exit(1);
+    }
+
+    label_table_capacity = new_capacity;
+    label_table = new_label_table;
+}
+
 void insert_label (char *name, int len, int ram_addr) {
+    if (label_table_count >= label_table_capacity) {
+        make_label_bigger();
+    }
     int current_index = label_table_count++;
 
     label_table[current_index].name = malloc(len + 1);
