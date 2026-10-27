@@ -9,10 +9,18 @@
 FILE *fp;
 void init_generate_file(void) {
     fp = fopen("chapter6/asm/test.hack", "wb");
+
+    if (fp == NULL) {
+        perror("Failed to open output file");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void fin_generate_file(void) {
-    fclose(fp);
+    if (fclose(fp) == EOF) {
+        perror("fclose failed");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void generate_A_Number(int addr) {
