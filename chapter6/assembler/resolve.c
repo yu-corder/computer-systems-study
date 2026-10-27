@@ -126,3 +126,19 @@ int find_label (char *name) {
     return -1;
 }
 
+
+void free_table(void) {
+    for (int i = 0; i < label_table_count; i++) {
+        free(label_table[i].name);
+    }
+
+    for (int i = 0; i < symbol_table_count; i++) {
+        free(symbol_table[i].name);
+    }
+
+    free(label_table);
+    free(symbol_table);
+    label_table = NULL;
+    symbol_table = NULL;
+}
+

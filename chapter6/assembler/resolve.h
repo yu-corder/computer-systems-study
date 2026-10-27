@@ -17,4 +17,6 @@ int insert_symbol (char *name);
 void init_label_table(void);
 void insert_label (char *name, int len, int ram_addr);
 int find_label (char *name);
+
+void free_table(void);
 #endif

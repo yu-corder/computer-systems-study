@@ -39,5 +39,6 @@ int main(int argc, char **argv) {
     init_symbol_table();
     parser(src);
     fin_generate_file();
+    free_table();
     return 0;
 }
