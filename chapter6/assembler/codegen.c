@@ -54,10 +54,9 @@ static const DestEntry dest_table[] = {
     {"A=", "100"},
 };
 
-
-static void dest_put(int *bits, const char *binary) {
-    for (int i = 0; i < 3; i++) {
-        bits[i + 10] = binary[i] - '0';
+static void put_bits(int *bits, int offset, const char *binary, int length) {
+    for (int i = 0; i < length; i++) {
+        bits[offset + i] = binary[i] - '0';
     }
 }
 
@@ -67,7 +66,7 @@ static int dest(char *p, int *bits) {
         int len = strlen(name);
 
         if (strncmp(p, name, len) == 0) {
-                dest_put(bits, dest_table[i].binary);
+                put_bits(bits, 10, dest_table[i].binary, 3);
                 return len - 1;
         }
     }
@@ -91,12 +90,6 @@ static const JumpEntry jump_table[] = {
     {"NOJ", "000"},
 };
 
-static void jump_put(int *bits, const char *binary) {
-    for (int i = 0; i < 3; i++) {
-        bits[i + 13] = binary[i] - '0';
-    }
-}
-
 static int jump(char *p, int *bits) {
     for (size_t i = 0; i < sizeof(jump_table) / sizeof(jump_table[0]); i++) {
         const char *name = jump_table[i].name;
@@ -104,7 +97,7 @@ static int jump(char *p, int *bits) {
 
         if (strncmp(p, name, len) == 0 &&
             (p[len] == '\n' || p[len] == '\0')) {
-                jump_put(bits, jump_table[i].binary);
+                put_bits(bits, 13, jump_table[i].binary, 3);
                 return len;
         }
     }
@@ -154,13 +147,6 @@ static const CompEntry comp_table[] = {
     {"D|A", "0010101"},
 };
 
-static void comp_put (int *bits, const char *binary)
-{
-    for (int i = 0; i < 7; i++) {
-        bits[i + 3] = binary[i] - '0';
-    }
-}
-
 static int comp(char *p, int *bits) {
     for (size_t i = 0; i < sizeof(comp_table) / sizeof(comp_table[0]); i++) {
         const char *name = comp_table[i].name;
@@ -168,7 +154,7 @@ static int comp(char *p, int *bits) {
 
         if (strncmp(p, name, len) == 0 &&
             (p[len] == ';' || p[len] == '\n' || p[len] == '\0')) {
-                comp_put(bits, comp_table[i].binary);
+                put_bits(bits, 3, comp_table[i].binary, 7);
                 return len;
         }
     }
