@@ -37,19 +37,16 @@ void generate_A_Number(int addr) {
 
 void generate_A_symbol(char *name) {
     int addr = find_label(name);
-    if (addr != -1) {
-        generate_A_Number(addr);
-        return;
-    }
-
-    addr = find_symbol(name);
 
     if (addr == -1) {
-        addr = insert_symbol(name);
-        generate_A_Number(addr);
-    } else {
-        generate_A_Number(addr);
+        addr = find_symbol(name);
     }
+    
+    if (addr == -1) {
+        addr = insert_symbol(name);   
+    }
+
+    generate_A_Number(addr);
 }
 
 typedef struct {
