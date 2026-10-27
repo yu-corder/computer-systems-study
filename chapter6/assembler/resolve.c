@@ -32,7 +32,7 @@ static char *predefined_table[] = {
     "R15"
 };
 
-void insert_predefined_symbols(void) {
+static void insert_predefined_symbols(void) {
     int size = sizeof(predefined_table) / sizeof(predefined_table[0]);
     for (int i = 0; i < size; i++) {
         insert_symbol(predefined_table[i]);
@@ -45,7 +45,7 @@ void init_symbol_table (void) {
     insert_predefined_symbols();
 }
 
-void make_bigger(void) {
+static void make_bigger(void) {
     int new_capacity = symbol_table_capacity * 2;
     Symbol *new_symbol_table = realloc(symbol_table, sizeof(Symbol) * new_capacity);
 
@@ -93,7 +93,7 @@ void init_label_table(void) {
     label_table = malloc(sizeof(Label) * 16);
 }
 
-void make_label_bigger(void) {
+static void make_label_bigger(void) {
     int new_capacity = label_table_capacity * 2;
     Label *new_label_table = realloc(label_table, sizeof(Label) * new_capacity);
 
