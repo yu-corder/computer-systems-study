@@ -70,13 +70,13 @@ static const DestEntry dest_table[] = {
 };
 
 
-void dest_put(int *bits, const char *binary) {
+static void dest_put(int *bits, const char *binary) {
     for (int i = 0; i < 3; i++) {
         bits[i + 10] = binary[i] - '0';
     }
 }
 
-int dest(char *p, int *bits) {
+static int dest(char *p, int *bits) {
     for (size_t i = 0; i < sizeof(dest_table) / sizeof(dest_table[0]); i++) {
         const char *name = dest_table[i].name;
         int len = strlen(name);
@@ -106,18 +106,13 @@ static const JumpEntry jump_table[] = {
     {"NOJ", "000"},
 };
 
-void jump_put(int *bits, const char *binary) {
+static void jump_put(int *bits, const char *binary) {
     for (int i = 0; i < 3; i++) {
         bits[i + 13] = binary[i] - '0';
     }
 }
 
-int no_jump(int *bits) {
-    jump_put(bits, jump_table[7].binary);
-    return 1;
-}
-
-int jump(char *p, int *bits) {
+static int jump(char *p, int *bits) {
     for (size_t i = 0; i < sizeof(jump_table) / sizeof(jump_table[0]); i++) {
         const char *name = jump_table[i].name;
         int len = strlen(name);
@@ -174,14 +169,14 @@ static const CompEntry comp_table[] = {
     {"D|A", "0010101"},
 };
 
-void comp_put (int *bits, const char *binary)
+static void comp_put (int *bits, const char *binary)
 {
     for (int i = 0; i < 7; i++) {
         bits[i + 3] = binary[i] - '0';
     }
 }
 
-int comp(char *p, int *bits) {
+static int comp(char *p, int *bits) {
     for (size_t i = 0; i < sizeof(comp_table) / sizeof(comp_table[0]); i++) {
         const char *name = comp_table[i].name;
         int len = strlen(name);
