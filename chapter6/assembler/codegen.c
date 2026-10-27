@@ -79,7 +79,7 @@ static int dest(char *p, int *bits) {
         }
     }
 
-    return 0;
+    return -1;
 }
 
 typedef struct {
@@ -110,7 +110,7 @@ static int jump(char *p, int *bits) {
         }
     }
 
-    return 1;
+    return -1;
 }
 
 
@@ -167,7 +167,7 @@ static int comp(char *p, int *bits) {
         }
     }
 
-    return 0;
+    return -1;
 }
 
 int generate_C (char *p) {
@@ -191,15 +191,28 @@ int generate_C (char *p) {
 
     if (equal != NULL) {
         tmp_len = dest(p, bits);
+        if (tmp_len == -1) {
+            fprintf(stderr, "Error: Invalid dest instruction\n");
+            exit(EXIT_FAILURE);
+        }
         p += tmp_len + 1;
         len += tmp_len + 1;
     }
 
     tmp_len = comp(p, bits);
+    if (tmp_len == -1) {
+        fprintf(stderr, "Error: Invalid comp instruction\n");
+        exit(EXIT_FAILURE);
+    }
     len += tmp_len;
 
     if (semicolon != NULL) {
         tmp_len = jump(semicolon + 1, bits);
+
+        if (tmp_len == -1) {
+            fprintf(stderr, "Error: Invalid jump instruction\n");
+            exit(EXIT_FAILURE);
+        }
         len += tmp_len + 1;
     }
 
