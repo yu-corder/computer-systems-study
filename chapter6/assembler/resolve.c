@@ -8,40 +8,70 @@ Symbol *symbol_table;
 int symbol_table_capacity;
 int symbol_table_count = 0;
 
+int symbol_address = 16;
+
 
 Label *label_table;
 int label_table_capacity;
 int label_table_count = 0;
 
-static char *predefined_table[] = {
-    "SP",
-    "LCL",
-    "ARG",
-    "THIS",
-    "THAT",
-    "R5",
-    "R6",
-    "R7",
-    "R8",
-    "R9",
-    "R10",
-    "R11",
-    "R12",
-    "R13",
-    "R14",
-    "R15"
+typedef struct {
+    char name[8];
+    int addr;
+} EntryLabel;
+
+static EntryLabel predefined_table[] = {
+    {"SP", 0},
+    {"LCL", 1},
+    {"ARG", 2},
+    {"THIS", 3},
+    {"THAT", 4},
+    {"R0", 0},
+    {"R1", 1},
+    {"R2", 2},
+    {"R3", 3},
+    {"R4", 4},
+    {"R5", 5},
+    {"R6", 6},
+    {"R7", 7},
+    {"R8", 8},
+    {"R9", 9},
+    {"R10", 10},
+    {"R11", 11},
+    {"R12", 12},
+    {"R13", 13},
+    {"R14", 14},
+    {"R15", 15},
+    {"SCREEN", 16384},
+    {"KBD", 24576},
 };
 
 static void insert_predefined_symbols(void) {
     int size = sizeof(predefined_table) / sizeof(predefined_table[0]);
     for (int i = 0; i < size; i++) {
-        insert_symbol(predefined_table[i]);
+        int current_index = symbol_table_count++;
+        size_t len = strlen(predefined_table[i].name);
+
+        char *copy = malloc(len + 1);
+        if (copy == NULL) {
+            perror("malloc failed");
+            exit(EXIT_FAILURE);
+        }
+
+        memcpy(copy, predefined_table[i].name, len + 1);
+        symbol_table[current_index].name = copy;
+        symbol_table[current_index].addr = predefined_table[i].addr;
     }
 }
 
 void init_symbol_table (void) {
-    symbol_table_capacity = 16;
-    symbol_table = malloc(sizeof(Symbol) * 16);
+    symbol_table_capacity = 32;
+    symbol_table = malloc(sizeof(Symbol) * 32);
+    if (symbol_table == NULL) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+    symbol_address = 16;
     insert_predefined_symbols();
 }
 
@@ -61,7 +91,7 @@ static void make_bigger(void) {
 int find_symbol (char *name) {
     for (int i = 0; i < symbol_table_count; i++) {
         if (strcmp(symbol_table[i].name, name) == 0) {
-            return i;
+            return symbol_table[i].addr;
         }
     }
     return -1;
@@ -83,9 +113,16 @@ int insert_symbol (char *name) {
     memcpy(copy, name, len + 1);
 
     int current_index = symbol_table_count++;
-    symbol_table[current_index].name = copy;
 
-    return current_index;
+    if (symbol_address >= 16384) {
+        fprintf(stderr, "Error: Symbol address space exhausted\n");
+        exit(EXIT_FAILURE);
+    }
+
+    symbol_table[current_index].name = copy;
+    symbol_table[current_index].addr = symbol_address++;
+
+    return symbol_table[current_index].addr;
 }
 
 void init_label_table(void) {

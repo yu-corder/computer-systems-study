@@ -3,6 +3,7 @@
 
 typedef struct {
     char *name;
+    int addr;
 } Symbol;
 
 typedef struct {
