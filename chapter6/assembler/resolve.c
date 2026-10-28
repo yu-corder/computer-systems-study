@@ -128,6 +128,10 @@ int insert_symbol (char *name) {
 void init_label_table(void) {
     label_table_capacity = 16;
     label_table = malloc(sizeof(Label) * 16);
+    if (label_table == NULL) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
 }
 
 static void make_label_bigger(void) {
