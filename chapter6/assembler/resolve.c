@@ -4,16 +4,16 @@
 
 #include "resolve.h"
 
-Symbol *symbol_table;
-int symbol_table_capacity;
-int symbol_table_count = 0;
+static Symbol *symbol_table;
+static int symbol_table_capacity;
+static int symbol_table_count = 0;
 
-int symbol_address = 16;
+static int symbol_address = 16;
 
 
-Label *label_table;
-int label_table_capacity;
-int label_table_count = 0;
+static Label *label_table;
+static int label_table_capacity;
+static int label_table_count = 0;
 
 typedef struct {
     char name[8];
