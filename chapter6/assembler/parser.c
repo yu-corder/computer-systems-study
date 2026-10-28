@@ -75,7 +75,7 @@ static void parse_label(char *p) {
 
     if (!one_path) return;
 
-    insert_label(str, len, ram_addr);
+    insert_label(str, ram_addr);
 }
 
 void parser (char *p) {

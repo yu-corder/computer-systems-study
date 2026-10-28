@@ -147,14 +147,23 @@ static void make_label_bigger(void) {
     label_table = new_label_table;
 }
 
-void insert_label (char *name, int len, int ram_addr) {
+void insert_label (char *name, int ram_addr) {
     if (label_table_count >= label_table_capacity) {
         make_label_bigger();
     }
-    int current_index = label_table_count++;
 
-    label_table[current_index].name = malloc(len + 1);
-    strcpy(label_table[current_index].name, name);
+    size_t len = strlen(name);
+    char *copy = malloc(len + 1);
+
+    if (copy == NULL) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+
+    memcpy(copy, name, len + 1);
+
+    int current_index = label_table_count++;
+    label_table[current_index].name = copy;
     label_table[current_index].ram_addr = ram_addr;
 }
 
