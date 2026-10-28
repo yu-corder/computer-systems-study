@@ -20,6 +20,19 @@ typedef struct {
     int addr;
 } EntryLabel;
 
+static char *copy_string(const char *name) {
+    size_t len = strlen(name);
+
+    char *copy = malloc(len + 1);
+
+    if (copy == NULL) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(copy, name, len + 1);
+    return copy;
+}
+
 static EntryLabel predefined_table[] = {
     {"SP", 0},
     {"LCL", 1},
@@ -50,16 +63,7 @@ static void insert_predefined_symbols(void) {
     int size = sizeof(predefined_table) / sizeof(predefined_table[0]);
     for (int i = 0; i < size; i++) {
         int current_index = symbol_table_count++;
-        size_t len = strlen(predefined_table[i].name);
-
-        char *copy = malloc(len + 1);
-        if (copy == NULL) {
-            perror("malloc failed");
-            exit(EXIT_FAILURE);
-        }
-
-        memcpy(copy, predefined_table[i].name, len + 1);
-        symbol_table[current_index].name = copy;
+        symbol_table[current_index].name = copy_string(predefined_table[i].name);
         symbol_table[current_index].addr = predefined_table[i].addr;
     }
 }
@@ -102,16 +106,6 @@ int insert_symbol (char *name) {
         make_bigger();
     }
 
-    size_t len = strlen(name);
-
-    char *copy = malloc(len + 1);
-    if (copy == NULL) {
-        perror("malloc failed");
-        exit(EXIT_FAILURE);
-    }
-
-    memcpy(copy, name, len + 1);
-
     int current_index = symbol_table_count++;
 
     if (symbol_address >= 16384) {
@@ -119,7 +113,7 @@ int insert_symbol (char *name) {
         exit(EXIT_FAILURE);
     }
 
-    symbol_table[current_index].name = copy;
+    symbol_table[current_index].name = copy_string(name);
     symbol_table[current_index].addr = symbol_address++;
 
     return symbol_table[current_index].addr;
@@ -152,18 +146,8 @@ void insert_label (char *name, int ram_addr) {
         make_label_bigger();
     }
 
-    size_t len = strlen(name);
-    char *copy = malloc(len + 1);
-
-    if (copy == NULL) {
-        perror("malloc failed");
-        exit(EXIT_FAILURE);
-    }
-
-    memcpy(copy, name, len + 1);
-
     int current_index = label_table_count++;
-    label_table[current_index].name = copy;
+    label_table[current_index].name = copy_string(name);
     label_table[current_index].ram_addr = ram_addr;
 }
 
