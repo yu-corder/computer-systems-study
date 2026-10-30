@@ -10,14 +10,13 @@
 bool one_path = true;
 int line = 0;
 int ram_addr = 0;
-static void parse_A(char *p) {
+static char *parse_A(char *p) {
     if (*p == 'R') {
         //@レジスタ
         p++;
         int addr = 0;
         if (isdigit(*p)) {
             addr = strtol(p, &p, 10);
-            p++;
         } else {
             printf("Line %d: A numeric value follows the register.", line + 1);
             exit(1);
@@ -58,9 +57,10 @@ static void parse_A(char *p) {
         }
     }
     ram_addr++;
+    return p;
 }
 
-static void parse_label(char *p) {
+static char *parse_label(char *p) {
     char str[32];
     int len = 0;
     while(isalnum(*p) && *p != ')') {
@@ -73,9 +73,10 @@ static void parse_label(char *p) {
         p++;
     }
 
-    if (!one_path) return;
+    if (!one_path) return p;
 
     insert_label(str, ram_addr);
+    return p;
 }
 
 void parser (char *p) {
@@ -98,7 +99,7 @@ void parser (char *p) {
 
         if (*p == '@') {
             p++;
-            parse_A(p);
+            p = parse_A(p);
             continue;
         }
 
@@ -109,7 +110,7 @@ void parser (char *p) {
 
         if (*p == '(') {
             p++;
-            parse_label(p);
+            p = parse_label(p);
             continue;
         }
 
