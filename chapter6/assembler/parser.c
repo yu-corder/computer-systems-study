@@ -10,6 +10,28 @@
 bool one_path = true;
 int line = 0;
 int ram_addr = 0;
+static char *read_name(char *p, int *len) {
+    char *start = p;
+
+    while (isalnum((unsigned char) *p)) {
+        p++;
+    }
+
+    size_t length = (size_t)(p - start);
+    char *str = malloc(length + 1);
+
+    if (str == NULL) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+
+    memcpy(str, start, length);
+    str[length] = '\0';
+    *len = (int) length;
+
+    return str;
+}
+
 static char *parse_A(char *p) {
     if (*p == 'R') {
         //@レジスタ
@@ -17,18 +39,24 @@ static char *parse_A(char *p) {
         int addr = 0;
         if (isdigit(*p)) {
             addr = strtol(p, &p, 10);
+            if (addr < 0 || addr > 15) {
+                printf("Line %d: Expected a numeric value after register.", line + 1);
+                exit(1);
+            }
+
+            if (!one_path) {
+                generate_A_Number(addr);
+            }
         } else {
-            printf("Line %d: A numeric value follows the register.", line + 1);
-            exit(1);
-        }
+            int len = 0;
+            char *str = read_name(p, &len);
+            p += len;
 
-        if (addr < 0 || addr > 15) {
-            printf("Line %d: Expected a numeric value after register.", line + 1);
-            exit(1);
-        }
+            if (!one_path) {
+                generate_A_symbol(str);
+            }
 
-        if (!one_path) {
-            generate_A_Number(addr);
+            free(str);
         }
     } else if (isdigit(*p)) {
         //@数値
@@ -44,17 +72,15 @@ static char *parse_A(char *p) {
         }
     } else {
         //それ以外
-        char str[32];
         int len = 0;
-
-        while(isalnum(*p) && *p != '\n') {
-            str[len++] = *p++;
-        }
-        str[len] = '\0';
+        char *str = read_name(p, &len);
+        p += len;
 
         if (!one_path) {
             generate_A_symbol(str);
         }
+
+        free(str);
     }
     ram_addr++;
     return p;

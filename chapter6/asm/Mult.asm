@@ -5,11 +5,11 @@ M=0
 //カウンタiにR1の値をセット
 @R1
 D=M
-@i
+@RESULT
 M=D
 
 //最初からiが0なら計算せずに即終了する
-@i
+@RESULT
 D=M
 @END
 D;JEQ
@@ -28,11 +28,11 @@ D=D+M
 M=D
 
 //カウンタiを1減らす
-@i
+@RESULT
 M=M-1
 
 //カウンタiが0でなければLOOPに戻る
-@i
+@RESULT
 D=M
 @LOOP
 D;JNE
