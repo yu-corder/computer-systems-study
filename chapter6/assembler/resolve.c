@@ -33,7 +33,7 @@ static char *copy_string(const char *name) {
     return copy;
 }
 
-static EntryLabel predefined_table[] = {
+static const EntryLabel predefined_table[] = {
     {"SP", 0},
     {"LCL", 1},
     {"ARG", 2},
@@ -84,8 +84,8 @@ static void make_bigger(void) {
     Symbol *new_symbol_table = realloc(symbol_table, sizeof(Symbol) * new_capacity);
 
     if (new_symbol_table == NULL) {
-        printf("Memory expansion failed.");
-        exit(1);
+        perror("realloc failed");
+        exit(EXIT_FAILURE);
     }
 
     symbol_table_capacity = new_capacity;
@@ -106,12 +106,12 @@ int insert_symbol (char *name) {
         make_bigger();
     }
 
-    int current_index = symbol_table_count++;
-
     if (symbol_address >= 16384) {
         fprintf(stderr, "Error: Symbol address space exhausted\n");
         exit(EXIT_FAILURE);
     }
+
+    int current_index = symbol_table_count++;
 
     symbol_table[current_index].name = copy_string(name);
     symbol_table[current_index].addr = symbol_address++;
@@ -133,8 +133,8 @@ static void make_label_bigger(void) {
     Label *new_label_table = realloc(label_table, sizeof(Label) * new_capacity);
 
     if (new_label_table == NULL) {
-        printf("Memory expansion failed.");
-        exit(1);
+        perror("realloc failed");
+        exit(EXIT_FAILURE);
     }
 
     label_table_capacity = new_capacity;
@@ -174,5 +174,10 @@ void free_table(void) {
     free(symbol_table);
     label_table = NULL;
     symbol_table = NULL;
+    label_table_count = 0;
+    label_table_capacity = 0;
+    symbol_table_count = 0;
+    symbol_table_capacity = 0;
+    symbol_address = 16;
 }
 
